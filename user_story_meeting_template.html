@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Story Meeting</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #0f0f0f;
+    color: #e8e8e8;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 14px;
+    padding: 28px 24px 48px;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 28px;
+  }
+  .header h1 {
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+  }
+  .badge {
+    background: #2a2a2a;
+    border: 1px solid #3a3a3a;
+    color: #aaa;
+    font-size: 12px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-top: 4px;
+  }
+
+  /* Section */
+  .section { margin-bottom: 32px; }
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: #666;
+    border-top: 1px solid #222;
+    padding-top: 12px;
+    margin-bottom: 14px;
+  }
+
+  /* Field */
+  .field { margin-bottom: 14px; }
+  .field-label {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 6px;
+  }
+
+  input[type="text"], textarea, select {
+    width: 100%;
+    background: #1e1e1e;
+    border: 1px solid #2e2e2e;
+    border-radius: 8px;
+    color: #e8e8e8;
+    font-family: inherit;
+    font-size: 14px;
+    padding: 10px 14px;
+    outline: none;
+    transition: border-color 0.15s;
+    resize: vertical;
+  }
+  input[type="text"]::placeholder,
+  textarea::placeholder { color: #555; }
+  input[type="text"]:focus,
+  textarea:focus,
+  select:focus { border-color: #555; }
+
+  select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+  select option { background: #1e1e1e; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+  /* User Story box */
+  .story-box {
+    background: #1a1a1a;
+    border: 1px solid #2e2e2e;
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .story-formula {
+    font-size: 13px;
+    color: #777;
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+  .story-formula span.u { color: #4ade80; }
+  .story-formula span.f { color: #60a5fa; }
+  .story-formula span.v { color: #fbbf24; }
+  .story-legend {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 12px;
+    font-size: 12px;
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+  .dot-g { background: #4ade80; }
+  .dot-b { background: #60a5fa; }
+  .dot-y { background: #fbbf24; }
+  .story-cols { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .story-cols textarea { min-height: 80px; background: #222; }
+
+  /* Discovery */
+  .discovery-item { display: flex; gap: 12px; margin-bottom: 10px; align-items: flex-start; }
+  .discovery-num {
+    color: #555;
+    font-size: 13px;
+    min-width: 16px;
+    padding-top: 11px;
+  }
+  .discovery-item textarea { min-height: 70px; }
+
+  /* Type selector pills */
+  .type-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .pill {
+    background: #1e1e1e;
+    border: 1px solid #333;
+    border-radius: 20px;
+    color: #888;
+    font-size: 12px;
+    padding: 5px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .pill:hover { border-color: #555; color: #ccc; }
+  .pill.active { background: #2a2a2a; border-color: #666; color: #e8e8e8; }
+
+  /* Buttons */
+  .btn-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 32px;
+    padding-top: 20px;
+    border-top: 1px solid #222;
+  }
+  .btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+  }
+  .btn-primary {
+    background: #e8e8e8;
+    color: #0f0f0f;
+  }
+  .btn-primary:hover { background: #fff; }
+  .btn-secondary {
+    background: transparent;
+    color: #888;
+    border: 1px solid #333;
+  }
+  .btn-secondary:hover { border-color: #555; color: #ccc; }
+
+  /* Toast */
+  #toast {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: #e8e8e8;
+    color: #0f0f0f;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 540px) {
+    .two-col, .three-col, .story-cols { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>User Story Meeting</h1>
+  <span class="badge">Template</span>
+</div>
+
+<!-- PREP -->
+<div class="section">
+  <div class="section-label">Prep</div>
+
+  <div class="field">
+    <div class="field-label">Data sources available</div>
+    <input type="text" id="prep_sources" placeholder="e.g. Snowflake, DOMO, Vista ERP, Tenna, Samsara...">
+  </div>
+
+  <div class="field">
+    <div class="field-label">Reports / dashboards that currently exist</div>
+    <textarea id="prep_reports" rows="2" placeholder="List any existing reports, DOMO cards, or dynamic tables related to this request..."></textarea>
+  </div>
+
+  <div class="field">
+    <div class="field-label">Stakeholders already involved</div>
+    <input type="text" id="prep_stakeholders" placeholder="Names and roles...">
+  </div>
+</div>
+
+<!-- CONTEXT -->
+<div class="section">
+  <div class="section-label">Context</div>
+  <div class="two-col">
+    <div class="field">
+      <div class="field-label">Requester name</div>
+      <input type="text" id="ctx_name" placeholder="Full name...">
+    </div>
+    <div class="field">
+      <div class="field-label">Requester role</div>
+      <input type="text" id="ctx_role" placeholder="e.g. VP, Project Director, PM, Manager...">
+    </div>
+  </div>
+
+  <div class="field">
+    <div class="field-label">Request type</div>
+    <div class="type-pills" id="type_pills">
+      <span class="pill" onclick="togglePill(this)">New Report</span>
+      <span class="pill" onclick="togglePill(this)">New Dashboard</span>
+      <span class="pill" onclick="togglePill(this)">New Workflow / Alert</span>
+      <span class="pill" onclick="togglePill(this)">Amendment / Enhancement</span>
+      <span class="pill" onclick="togglePill(this)">Data Pipeline / ETL</span>
+      <span class="pill" onclick="togglePill(this)">Ad Hoc Analysis</span>
+      <span class="pill" onclick="togglePill(this)">Other</span>
+    </div>
+  </div>
+
+  <div class="field">
+    <div class="field-label">Related project / domain</div>
+    <input type="text" id="ctx_domain" placeholder="e.g. Fleet Management, EHS Compliance, Payroll, Operations...">
+  </div>
+</div>
+
+<!-- USER STORY -->
+<div class="section">
+  <div class="section-label">User Story</div>
+  <div class="story-box">
+    <div class="story-formula">
+      As a <span class="u">[user]</span>, I want <span class="f">[functionality]</span> so that <span class="v">[business value]</span>.
+    </div>
+    <div class="story-legend">
+      <span><span class="dot dot-g"></span>User</span>
+      <span><span class="dot dot-b"></span>Functionality</span>
+      <span><span class="dot dot-y"></span>Value</span>
+    </div>
+    <div class="story-cols">
+      <textarea id="story_user" placeholder="Who is this for?"></textarea>
+      <textarea id="story_func" placeholder="What do they need to do?"></textarea>
+      <textarea id="story_value" placeholder="Why does this matter?"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- DISCOVERY QUESTIONS -->
+<div class="section">
+  <div class="section-label">Discovery Questions</div>
+
+  <div class="discovery-item">
+    <div class="discovery-num">1</div>
+    <textarea id="dq1" placeholder="What is the current process? How is this being tracked or reported today?"></textarea>
+  </div>
+  <div class="discovery-item">
+    <div class="discovery-num">2</div>
+    <textarea id="dq2" placeholder="If you could wave a magic wand, what would the ideal solution look like?"></textarea>
+  </div>
+  <div class="discovery-item">
+    <div class="discovery-num">3</div>
+    <textarea id="dq3" placeholder="Who else needs to be involved or notified? Who are the downstream consumers?"></textarea>
+  </div>
+  <div class="discovery-item">
+    <div class="discovery-num">4</div>
+    <textarea id="dq4" placeholder="What does success look like? How will we know this is working?"></textarea>
+  </div>
+</div>
+
+<!-- WIREFRAMING -->
+<div class="section">
+  <div class="section-label">Wireframing</div>
+  <div class="field">
+    <div class="field-label">Whiteboard / sketches / mockup notes</div>
+    <textarea id="wire_notes" rows="3" placeholder="Describe layout, components, chart types, filters, or paste a link to a whiteboard or screenshot..."></textarea>
+  </div>
+</div>
+
+<!-- DATA & TECHNICAL -->
+<div class="section">
+  <div class="section-label">Data &amp; Technical</div>
+
+  <div class="field">
+    <div class="field-label">Source tables / schemas</div>
+    <textarea id="tech_sources" rows="2" placeholder="e.g. SNOWFLAKE.VISTA.JCCM, MART_FLEET.METLS.ACTIVE_METLS, Tenna work orders..."></textarea>
+  </div>
+
+  <div class="two-col">
+    <div class="field">
+      <div class="field-label">Tool / platform</div>
+      <input type="text" id="tech_tool" placeholder="e.g. Snowflake, DOMO, both...">
+    </div>
+    <div class="field">
+      <div class="field-label">Output type</div>
+      <input type="text" id="tech_output" placeholder="e.g. Dynamic table, Beast Mode, Workflow, DataFlow...">
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="field">
+      <div class="field-label">Login / access info</div>
+      <input type="text" id="tech_login" placeholder="Credentials, roles, environment...">
+    </div>
+    <div class="field">
+      <div class="field-label">API / doc info</div>
+      <input type="text" id="tech_api" placeholder="Endpoints, keys, docs URL...">
+    </div>
+  </div>
+
+  <div class="field">
+    <div class="field-label">Known constraints or gotchas</div>
+    <textarea id="tech_constraints" rows="2" placeholder="Data gaps, refresh limits, access restrictions, existing logic to preserve..."></textarea>
+  </div>
+</div>
+
+<!-- NOTES -->
+<div class="section">
+  <div class="section-label">Notes</div>
+  <div class="field">
+    <textarea id="notes" rows="3" placeholder="Anything not captured above — follow-up items, open questions, links..."></textarea>
+  </div>
+</div>
+
+<!-- BUTTONS -->
+<div class="btn-row">
+  <button class="btn btn-primary" onclick="copySummary()">Copy summary ↗</button>
+  <button class="btn btn-secondary" onclick="clearAll()">Clear all</button>
+</div>
+
+<div id="toast">Summary copied to clipboard!</div>
+
+<script>
+  function togglePill(el) {
+    el.classList.toggle('active');
+  }
+
+  function val(id) {
+    return (document.getElementById(id)?.value || '').trim();
+  }
+
+  function activePills() {
+    return [...document.querySelectorAll('#type_pills .pill.active')]
+      .map(p => p.textContent).join(', ') || '—';
+  }
+
+  function copySummary() {
+    const lines = [
+      '# User Story Meeting Summary',
+      '',
+      '## Prep',
+      `Data Sources: ${val('prep_sources') || '—'}`,
+      `Existing Reports: ${val('prep_reports') || '—'}`,
+      `Stakeholders: ${val('prep_stakeholders') || '—'}`,
+      '',
+      '## Context',
+      `Requester: ${val('ctx_name') || '—'} (${val('ctx_role') || '—'})`,
+      `Request Type: ${activePills()}`,
+      `Domain: ${val('ctx_domain') || '—'}`,
+      '',
+      '## User Story',
+      `As a: ${val('story_user') || '—'}`,
+      `I want: ${val('story_func') || '—'}`,
+      `So that: ${val('story_value') || '—'}`,
+      '',
+      '## Discovery',
+      `1. ${val('dq1') || '—'}`,
+      `2. ${val('dq2') || '—'}`,
+      `3. ${val('dq3') || '—'}`,
+      `4. ${val('dq4') || '—'}`,
+      '',
+      '## Wireframing',
+      val('wire_notes') || '—',
+      '',
+      '## Data & Technical',
+      `Source Tables: ${val('tech_sources') || '—'}`,
+      `Tool / Platform: ${val('tech_tool') || '—'}`,
+      `Output Type: ${val('tech_output') || '—'}`,
+      `Login / Access: ${val('tech_login') || '—'}`,
+      `API / Docs: ${val('tech_api') || '—'}`,
+      `Constraints: ${val('tech_constraints') || '—'}`,
+      '',
+      '## Notes',
+      val('notes') || '—',
+    ];
+
+    navigator.clipboard.writeText(lines.join('\n')).then(() => {
+      const t = document.getElementById('toast');
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    });
+  }
+
+  function clearAll() {
+    ['prep_sources','prep_reports','prep_stakeholders','ctx_name','ctx_role','ctx_domain',
+     'story_user','story_func','story_value','dq1','dq2','dq3','dq4',
+     'wire_notes','tech_sources','tech_tool','tech_output','tech_login','tech_api','tech_constraints','notes']
+      .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+    document.querySelectorAll('#type_pills .pill.active').forEach(p => p.classList.remove('active'));
+  }
+</script>
+</body>
+</html>
